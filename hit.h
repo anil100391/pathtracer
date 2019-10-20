@@ -11,6 +11,7 @@ class hit
 public:
     vec3<T> _pos;
     vec3<T> _normal;
+    float   _r, _g, _b;
 };
 
 #endif // _hit_h_
