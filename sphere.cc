@@ -45,11 +45,11 @@ constexpr bool sphere<T>::intersect( const ray<T> &r, hit<T> &h ) const noexcept
     h._normal.normalize();
     if ( _radius > 0.4 )
     {
-        h._r = 1.0f; h._g = 0.0; h._b = 0.0f;
+        h._r = 1.0f; h._g = 1.0; h._b = 1.0f;
     }
     else
     {
-        h._r = 1.0f; h._g = 1.0; h._b = 0.0f;
+        h._r = 1.0f; h._g = 0.0; h._b = 1.0f;
     }
 
     return true;

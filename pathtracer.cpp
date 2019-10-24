@@ -7,14 +7,18 @@
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
+using FLOAT = double;
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
 constexpr unsigned int MAX_DEPTH = 4;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-using vec3f  = vec3<float>;
-using rayf   = ray<float>;
-using hitf   = hit<float>;
-using scenef = scene<float>;
+using vec3f  = vec3<FLOAT>;
+using rayf   = ray<FLOAT>;
+using hitf   = hit<FLOAT>;
+using scenef = scene<FLOAT>;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -66,7 +70,7 @@ static color tracepath(scenef& world, const rayf &r, unsigned int depth)
     if ( depth >= MAX_DEPTH )
         return {0, 0, 0, 0};
 
-    hit<float> h;
+    hitf h;
     if ( !world.intersect(r, h) )
         return {0, 0, 0, 0};
 
@@ -88,13 +92,12 @@ static color tracepath(scenef& world, const rayf &r, unsigned int depth)
     float cos_theta = newray.d % h._normal;
     // color BRDF = material.reflectance / M_PI ;
     color matreflectance = {1.0f, 1.0f, 1.0f, 1.0f};
-    // color matemittance   = {1.0f, 0, 0, 1.0f};
-    color matemittance   = {h._r,  h._g, h._b, 1.0f};
     color BRDF = matreflectance / M_PI ;
 
     // Recursively trace reflected light sources.
     color incoming = tracepath(world, newray, depth + 1);
 
+    color matemittance   = {h._r,  h._g, h._b, 1.0f};
     // Apply the Rendering Equation here.
     return matemittance + (BRDF * incoming * cos_theta / p);
 }
@@ -108,8 +111,8 @@ int main()
 
     vec3f  cameraPos = {0.0f, 0.0f, 0.0f};
     scenef world;
-    world << new sphere<float>( {0.0f, 0.0f, 3.0f}, 0.5f )
-          << new sphere<float>( {1.0f, 1.0f, 4.0f}, 0.25f );
+    world << new sphere<FLOAT>( {0.5f, 0.0f, 3.0f}, 0.5f )
+          << new sphere<FLOAT>( {-0.5f, 0.0f, 3.0f}, 0.39f );
 
     FILE *image = fopen( "render.ppm", "w" );
     fprintf( image, "P6\n%d %d\n255\n", width, height );
