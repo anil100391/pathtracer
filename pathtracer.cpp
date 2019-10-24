@@ -22,49 +22,6 @@ using scenef = scene<FLOAT>;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-struct color
-{
-    float r = 0;
-    float g = 0;
-    float b = 0;
-    float a = 1.0f;
-
-    color operator/(float scale)
-    {
-        return {r/scale, g/scale, b/scale, a/scale};
-    }
-
-    color operator*(float scale)
-    {
-        return {r*scale, g*scale, b*scale, a*scale};
-    }
-
-    color operator+(const color& other)
-    {
-        return {r + other.r, g+other.g, b+other.b, a+other.a};
-    }
-
-    color operator*(const color& other)
-    {
-        return {r*other.r, g*other.g, b*other.b, a*other.a};
-    }
-
-    void clip()
-    {
-        if (r < 0) r = 0;
-        if (g < 0) g = 0;
-        if (g < 0) b = 0;
-        if (a < 0) a = 0;
-
-        if (r > 1.0f) r = 1.0f;
-        if (g > 1.0f) g = 1.0f;
-        if (g > 1.0f) b = 1.0f;
-        if (a > 1.0f) a = 1.0f;
-    }
-};
-
-// -----------------------------------------------------------------------------
-// -----------------------------------------------------------------------------
 static color tracepath(scenef& world, const rayf &r, unsigned int depth)
 {
     if ( depth >= MAX_DEPTH )
@@ -85,19 +42,20 @@ static color tracepath(scenef& world, const rayf &r, unsigned int depth)
     else
         newray.d = rd;
 
+    // From wikipedia
     // Probability of the newray
     const float p = 1/(2*M_PI);
 
     // Compute the BRDF for this ray (assuming Lambertian reflection)
     float cos_theta = newray.d % h._normal;
     // color BRDF = material.reflectance / M_PI ;
-    color matreflectance = {1.0f, 1.0f, 1.0f, 1.0f};
+    color matreflectance = h._mat.diffuse();
     color BRDF = matreflectance / M_PI ;
 
     // Recursively trace reflected light sources.
     color incoming = tracepath(world, newray, depth + 1);
 
-    color matemittance   = {h._r,  h._g, h._b, 1.0f};
+    color matemittance   = h._mat.diffuse();
     // Apply the Rendering Equation here.
     return matemittance + (BRDF * incoming * cos_theta / p);
 }
@@ -111,14 +69,25 @@ int main()
 
     vec3f  cameraPos = {0.0f, 0.0f, 0.0f};
     scenef world;
-    world << new sphere<FLOAT>( {0.5f, 0.0f, 3.0f}, 0.5f )
-          << new sphere<FLOAT>( {-0.5f, 0.0f, 3.0f}, 0.39f );
+    material purpleDiffuse({1.0f, 0.0f, 1.0f, 1.0f});
+    material greenEmissive({1.0f, 0.0f, 0.0f, 1.0f});
+    greenEmissive.setEmissive(5.0f);
+
+    world << new sphere<FLOAT>( {0.5f, 0.0f, 3.0f}, 0.5f, purpleDiffuse )
+          << new sphere<FLOAT>( {-0.5f, 0.0f, 3.0f}, 0.39f, greenEmissive );
 
     FILE *image = fopen( "render.ppm", "w" );
     fprintf( image, "P6\n%d %d\n255\n", width, height );
+    float progPercent = 0.0f;
     for ( unsigned int jj = 0; jj < height; ++jj )
     {
-        std::cout << "image row:" << jj << "\n";
+        float curProg = (100.0f * jj / (height - 1));
+        if ( curProg > progPercent )
+        {
+            progPercent += 10;
+            std::cout << "[" << progPercent  << "% ...]" << "\n";
+        }
+
         for ( unsigned int ii = 0; ii < width; ++ii )
         {
             // build ray for pixel (ii, jj)
