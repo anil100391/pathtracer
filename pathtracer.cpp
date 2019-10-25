@@ -67,8 +67,8 @@ static color tracepath(scenef& world, randomNumGen& rng, const rayf &r, unsigned
 // -----------------------------------------------------------------------------
 int main()
 {
-    unsigned int width  = 512;
-    unsigned int height = 512;
+    unsigned int width  = 256;
+    unsigned int height = 256;
 
     vec3f  cameraPos = {0.0f, 0.0f, 0.0f};
     scenef world;
