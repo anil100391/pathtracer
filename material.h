@@ -2,6 +2,7 @@
 #define _material_h_
 
 #include "vec3.h"
+#include <algorithm>
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -32,25 +33,20 @@ struct color
         return {r * other.r, g * other.g, b * other.b, a * other.a};
     }
 
-    void clip()
+    void clamp()
     {
-        if ( r < 0 )
-            r = 0;
-        if ( g < 0 )
-            g = 0;
-        if ( b < 0 )
-            b = 0;
-        if ( a < 0 )
-            a = 0;
+        r = std::clamp( r, 0.0f, 1.0f );
+        g = std::clamp( g, 0.0f, 1.0f );
+        b = std::clamp( b, 0.0f, 1.0f );
+        a = std::clamp( a, 0.0f, 1.0f );
+    }
 
-        if ( r > 1 )
-            r = 1;
-        if ( g > 1 )
-            g = 1;
-        if ( b > 1 )
-            b = 1;
-        if ( a > 1 )
-            a = 1;
+    vec3<unsigned char> touchar() noexcept
+    {
+        clamp();
+        return {static_cast<unsigned char>(255 * std::pow( r, 1 / 2.2f ) + 0.5f),
+                static_cast<unsigned char>(255 * std::pow( g, 1 / 2.2f ) + 0.5f),
+                static_cast<unsigned char>(255 * std::pow( b, 1 / 2.2f ) + 0.5f)};
     }
 };
 

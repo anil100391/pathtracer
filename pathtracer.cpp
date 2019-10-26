@@ -108,12 +108,8 @@ int main()
                 pixcolor = pixcolor + tracepath(world, mtrng, r, 0);
             }
             pixcolor = pixcolor / ( numSamples * MAX_DEPTH );
-            pixcolor.clip();
-            unsigned char red = 255 * pixcolor.r;
-            unsigned char green = 255 * pixcolor.g;
-            unsigned char blue = 255 * pixcolor.b;
-
-            fprintf( image, "%c%c%c", red, green, blue );
+            vec3<unsigned char> c = pixcolor.touchar();
+            fprintf( image, "%c%c%c", c[0], c[1], c[2] );
         }
     }
 
