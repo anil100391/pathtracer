@@ -36,6 +36,7 @@ static color tracepath(scenef& world, randomNumGen& rng, const rayf &r, unsigned
 
     rayf newray{h._pos, h._normal};
 
+    // DIFFUSE COMPONENT
     vec3f w = h._normal;
     vec3f u;
 
@@ -58,6 +59,11 @@ static color tracepath(scenef& world, randomNumGen& rng, const rayf &r, unsigned
     color emit = h._mat.diffuse() * h._mat.emission();
     color diffuse = h._mat.diffuse();
     color incoming = tracepath(world, rng, newray, depth + 1);
+
+    // SPECULAR COMPONENT
+    newray.d = r.d - h._normal * 2 * (r.d % h._normal);
+    newray.d.normalize();
+    incoming =  incoming + tracepath(world, rng, newray, depth + 1);
     return emit + diffuse * incoming;
 }
 
