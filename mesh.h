@@ -1,4 +1,4 @@
-#prgma once
+#pragma once
 #include "boundingbox.h"
 #include "hit.h"
 #include "material.h"
