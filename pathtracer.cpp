@@ -2,6 +2,7 @@
 #include "scene.h"
 #include "sphere.h"
 #include "vec3.h"
+#include "mesh.h"
 #include <iostream>
 #include <cassert>
 #include <random>
@@ -21,6 +22,7 @@ using vec3f  = vec3<FLOAT>;
 using rayf   = ray<FLOAT>;
 using hitf   = hit<FLOAT>;
 using scenef = scene<FLOAT>;
+using meshf = mesh<FLOAT>;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -89,7 +91,8 @@ int main()
           << new sphere<FLOAT>(
                  {-0.4f, -0.5f, -0.6f}, 0.75f * 0.5f, redDiffuse )
           << new sphere<FLOAT>(
-                 {0.0f, 0.0f, 1.0f}, 0.75f * 0.5f, whiteEmissive );
+                 {0.0f, 0.0f, 1.0f}, 0.75f * 0.5f, whiteEmissive )
+          << new meshf("/home/nebula/code/path_tracer/box.obj");
 
     auto begin = std::chrono::high_resolution_clock::now();
     FILE *image = fopen( "render.ppm", "w" );
@@ -116,7 +119,7 @@ int main()
             color pixcolor = {0, 0, 0, 0};
             auto now = std::chrono::high_resolution_clock::now();
             std::mt19937 mtrng((now - begin).count());
-            unsigned int numSamples = 128;
+            unsigned int numSamples = 64;
             for ( unsigned int sample = 0; sample < numSamples; ++sample )
             {
                 pixcolor = pixcolor + tracepath(world, mtrng, r, 0);
