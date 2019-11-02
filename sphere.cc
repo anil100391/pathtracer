@@ -4,7 +4,7 @@
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <typename T>
-constexpr bool sphere<T>::intersect( const ray<T> &r, hit<T> &h ) const noexcept
+bool sphere<T>::intersect( const ray<T> &r, hit<T> &h ) const noexcept
 {
     // Solve t^2*d.d + 2*t*(o-p).d + (o-p).(o-p)-R^2 = 0
     auto op            = _center - r.o;

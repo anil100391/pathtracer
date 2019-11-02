@@ -7,8 +7,7 @@ template <typename T>
 class primitive
 {
 public:
-
-    constexpr virtual bool intersect(const ray<T> &r, hit<T> &h) const noexcept
+    virtual bool intersect( const ray<T> &r, hit<T> &h ) const noexcept
     {
         return false;
     }

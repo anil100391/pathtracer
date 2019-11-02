@@ -24,7 +24,7 @@ public:
 
     constexpr const vec3<T> &center() const noexcept { return _center; }
 
-    constexpr virtual bool intersect( const ray<T> &r, hit<T> &h ) const
+    virtual bool intersect( const ray<T> &r, hit<T> &h ) const
         noexcept override;
 
     constexpr const material &getMaterial() const noexcept { return _mat; }

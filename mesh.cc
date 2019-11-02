@@ -3,7 +3,7 @@
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <typename T>
-constexpr mesh<T>::mesh( const std::string &filename ) noexcept
+mesh<T>::mesh( const std::string &filename ) noexcept
 {
     std::ifstream file( filename );
 
@@ -65,7 +65,7 @@ constexpr mesh<T>::mesh( const std::string &filename ) noexcept
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <typename T>
-constexpr bool mesh<T>::intersect( const ray<T> &r, hit<T> &h ) const noexcept
+bool mesh<T>::intersect( const ray<T> &r, hit<T> &h ) const noexcept
 {
     if ( !intersect( _box, r ) )
         return false;

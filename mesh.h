@@ -13,9 +13,9 @@ class mesh : public primitive<T>
 {
 public:
     constexpr mesh() noexcept = default;
-    constexpr mesh( const std::string &filename ) noexcept;
+    mesh( const std::string &filename ) noexcept;
 
-    constexpr virtual bool intersect( const ray<T> &r, hit<T> &h ) const
+    virtual bool intersect( const ray<T> &r, hit<T> &h ) const
         noexcept override;
 
     constexpr const material &getMaterial() const noexcept { return _mat; }
