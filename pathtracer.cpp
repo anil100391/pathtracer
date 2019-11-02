@@ -35,13 +35,14 @@ static void buildCornellBoxScene( scenef &world )
     material whiteEmissive{{1.0f, 1.0f, 1.0f, 1.0f}};
     whiteEmissive.setEmissive( 50.0f );
 
-    auto cornellbox = new meshf( "C:/dev/pathtracer/cornellbox.obj" );
+    auto cornellbox = new meshf( "/home/nebula/code/path_tracer/cornellbox.obj" );
+    cornellbox->transform(mat44<FLOAT>::makeRotation(90, 2));
     world
         << new sphere<FLOAT>( {0.4f, 0.0f, -0.6f}, 0.75f * 0.5f, redDiffuse )
         << new sphere<FLOAT>( {-0.4f, 0.5f, -0.6f}, 0.75f * 0.5f, blueDiffuse )
         << new sphere<FLOAT>(
                {-0.4f, -0.5f, -0.6f}, 0.75f * 0.5f, greenDiffuse )
-        << new sphere<FLOAT>( {0.0f, 0.0f, 1.0f}, 0.75f * 0.5f, whiteEmissive )
+        << new sphere<FLOAT>( {0.0f, 0.0f, 1.25f}, 0.75f * 0.5f, whiteEmissive )
         << cornellbox;
 }
 
@@ -64,14 +65,19 @@ tracepath( scenef &world, randomNumGen &rng, const rayf &r, unsigned int depth )
     vec3f w = h._normal;
     vec3f u;
 
-    if ( w[0] > w[1] && w[0] > w[2] )
+    auto x = std::abs(w[0]);
+    auto y = std::abs(w[1]);
+    auto z = std::abs(w[2]);
+
+    if ( x > y && x > z )
         u = w * vec3f( 0, 1, 0 );
-    else if ( w[1] > w[0] && w[1] > w[2] )
+    else if ( y > x && y > z )
         u = w * vec3f( 0, 0, 1 );
     else
         u = w * vec3f( 1, 0, 0 );
 
     vec3f v = w * u;
+    assert ( v.len2() != 0 );
 
     auto  range = ( rng.max() - rng.min() );
     float r1    = 2.0f * M_PI * ( 1.0f * ( rng() - rng.min() ) / range );
@@ -99,7 +105,8 @@ int main()
     unsigned int width  = 512;
     unsigned int height = 512;
 
-    camera<FLOAT> cam{{3.672f, 0.0f, 0.0f}, {0, 0, 0.1}, 45};
+    float coord = 2.472f;
+    camera<FLOAT> cam{{coord, 0, 0}, {0, 0, 0}, 60};
 
     scenef world;
     buildCornellBoxScene( world );
@@ -122,7 +129,7 @@ int main()
         for ( unsigned int ii = 0; ii < width; ++ii )
         {
             color        pixcolor   = {0, 0, 0, 0};
-            unsigned int numSamples = 64;
+            unsigned int numSamples = 512;
             // subpixel y
             for ( unsigned int spy = 0; spy < 2; ++spy )
             {

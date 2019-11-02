@@ -44,9 +44,18 @@ struct color
     vec3<unsigned char> touchar() noexcept
     {
         clamp();
-        return {static_cast<unsigned char>(255 * std::pow( r, 1 / 2.2f ) + 0.5f),
-                static_cast<unsigned char>(255 * std::pow( g, 1 / 2.2f ) + 0.5f),
-                static_cast<unsigned char>(255 * std::pow( b, 1 / 2.2f ) + 0.5f)};
+        return {
+            static_cast<unsigned char>( 255 * std::pow( r, 1 / 2.2f ) + 0.5f ),
+            static_cast<unsigned char>( 255 * std::pow( g, 1 / 2.2f ) + 0.5f ),
+            static_cast<unsigned char>( 255 * std::pow( b, 1 / 2.2f ) + 0.5f )};
+    }
+
+    static color random()
+    {
+        return {1.0f * rand() / RAND_MAX,
+                1.0f * rand() / RAND_MAX,
+                1.0f * rand() / RAND_MAX,
+                1.0f};
     }
 };
 

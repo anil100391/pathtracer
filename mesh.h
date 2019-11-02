@@ -19,8 +19,6 @@ public:
     virtual bool intersect( const ray<T> &r, hit<T> &h ) const
         noexcept override;
 
-    constexpr const material &getMaterial() const noexcept { return _mat; }
-
     constexpr void transform(const mat44<T> &mat) noexcept;
 
 private:
@@ -35,7 +33,7 @@ private:
     std::vector<unsigned int> _trias;
 
     bbox<T>  _box;
-    material _mat;
+    std::vector<material> _mat;
 };
 
 #include "mesh.cc"

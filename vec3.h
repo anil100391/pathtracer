@@ -90,6 +90,13 @@ public:
         return *this;
     }
 
+    constexpr vec3<T>& operator*=( T scale ) noexcept
+    {
+        _x[0] *= scale; _x[1] *= scale; _x[2] *= scale;
+        return *this;
+    }
+
+
     T normalize() noexcept
     {
         T l = len();
