@@ -2,6 +2,7 @@
 #define _primitive_h_
 
 #include "hit.h"
+#include "ray.h"
 
 template <typename T>
 class primitive

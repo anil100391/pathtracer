@@ -1,6 +1,7 @@
 #ifndef _scene_h_
 #define _scene_h_
 
+#include <memory>
 #include <limits>
 #include <vector>
 #include "hit.h"
@@ -16,7 +17,7 @@ public:
 
     scene& operator << (primitive<T> *p) noexcept
     {
-        _primitives.push_back(p);
+        _primitives.emplace_back( p );
         return *this;
     }
 
@@ -41,7 +42,7 @@ public:
 
 private:
 
-    std::vector<primitive<T> *>  _primitives;
+    std::vector<std::shared_ptr<primitive<T>>>  _primitives;
 };
 
 #endif // _scene_h_

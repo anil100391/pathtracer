@@ -30,8 +30,8 @@ vec3f randomdirection()
 // -----------------------------------------------------------------------------
 int main()
 {
-    constexpr vec3f   center{2.0f, 1.0f, 4.0f};
-    constexpr spheref s( center, 2.0f );
+    vec3f   center{2.0f, 1.0f, 4.0f};
+    spheref s( center, 2.0f );
 
     constexpr int numTrials = 100;
 
