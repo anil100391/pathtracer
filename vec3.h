@@ -84,6 +84,12 @@ public:
         return {_x[0] / div, _x[1] / div, _x[2] / div};
     }
 
+    constexpr vec3<T>& operator/=( T div ) noexcept
+    {
+        _x[0] /= div; _x[1] /= div; _x[2] /= div;
+        return *this;
+    }
+
     T normalize() noexcept
     {
         T l = len();

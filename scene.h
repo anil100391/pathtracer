@@ -35,10 +35,8 @@ public:
                 dist = curDist;
                 h = curHit;
             }
-            if ( dist != std::numeric_limits<T>::infinity() )
-                return true;
         }
-        return false;
+        return ( dist != std::numeric_limits<T>::infinity() );
     }
 
 private:

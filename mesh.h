@@ -4,6 +4,7 @@
 #include "material.h"
 #include "primitive.h"
 #include "ray.h"
+#include "mat44.h"
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -18,6 +19,8 @@ public:
         noexcept override;
 
     constexpr const material &getMaterial() const noexcept { return _mat; }
+
+    constexpr void transform(const mat44<T> &mat) noexcept;
 
 private:
     static bool intersect( const bbox<T> &box, const ray<T> &r );

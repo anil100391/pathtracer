@@ -31,6 +31,16 @@ public:
         return _min[0] <= _max[0] && _min[1] <= _max[1] && _min[2] <= _max[2];
     }
 
+    constexpr void reset() noexcept
+    {
+        _min = {std::numeric_limits<T>::max(),
+                std::numeric_limits<T>::max(),
+                std::numeric_limits<T>::max()};
+        _max = {std::numeric_limits<T>::lowest(),
+                std::numeric_limits<T>::lowest(),
+                std::numeric_limits<T>::lowest()};
+    }
+
     constexpr void expand( const vec3<T> &point ) noexcept
     {
         if ( point[0] < _min[0] )

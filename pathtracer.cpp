@@ -63,9 +63,9 @@ static color tracepath(scenef& world, randomNumGen& rng, const rayf &r, unsigned
     color incoming = tracepath(world, rng, newray, depth + 1);
 
     // SPECULAR COMPONENT
-    newray.d = r.d - h._normal * 2 * (r.d % h._normal);
-    newray.d.normalize();
-    incoming =  incoming + tracepath(world, rng, newray, depth + 1);
+    // newray.d = r.d - h._normal * 2 * (r.d % h._normal);
+    // newray.d.normalize();
+    // incoming =  incoming + tracepath(world, rng, newray, depth + 1);
     return emit + diffuse * incoming;
 }
 
@@ -84,6 +84,11 @@ int main()
     material whiteEmissive({1.0f, 1.0f, 1.0f, 1.0f});
     whiteEmissive.setEmissive(50.0f);
 
+    auto cornellbox = new meshf("/home/nebula/code/path_tracer/cornellbox.obj");
+    // mesh->transform(mat44<FLOAT>::makeRotation(45, 0));
+    // mesh->transform(mat44<FLOAT>::makeRotation(45, 1));
+    // mesh->transform(mat44<FLOAT>::makeRotation(45, 2));
+    // mesh->transform(mat44<FLOAT>::makeScale(2));
     world << new sphere<FLOAT>(
                  {0.4f, 0.0f, -0.6f}, 0.75f * 0.5f, whiteDiffuse )
           << new sphere<FLOAT>(
@@ -92,7 +97,7 @@ int main()
                  {-0.4f, -0.5f, -0.6f}, 0.75f * 0.5f, redDiffuse )
           << new sphere<FLOAT>(
                  {0.0f, 0.0f, 1.0f}, 0.75f * 0.5f, whiteEmissive )
-          << new meshf("/home/nebula/code/path_tracer/box.obj");
+          << cornellbox;
 
     auto begin = std::chrono::high_resolution_clock::now();
     FILE *image = fopen( "render.ppm", "w" );

@@ -200,3 +200,17 @@ bool mesh<T>::rayTriaIntersect( const ray<T> & r,
     h._pos    = r.o + r.d * t;
     return true; // this ray hits the triangle
 }
+
+
+// -----------------------------------------------------------------------------
+// -----------------------------------------------------------------------------
+template<typename T>
+constexpr void mesh<T>::transform(const mat44<T> &mat) noexcept
+{
+    _box.reset();
+    for ( auto& v : _vertices )
+    {
+        mat.Transform(v);
+        _box.expand(v);
+    }
+}
