@@ -77,10 +77,21 @@ int main()
     unsigned int height = 256;
 
     vec3f  cameraPos = {3.672f, 0.0f, 0.0f};
+    vec3f  cameraFocus = {0, 0, 0};
+    vec3f  cameraUp = {0, 0, 1};
+    vec3f  cameraDir = cameraFocus - cameraPos;
+    cameraDir.normalize();
+    vec3f  cameraU = cameraDir * cameraUp;
+    cameraU.normalize();
+    vec3f  cameraV = cameraU * cameraDir;
+    cameraV.normalize();
+    float fov = .5f / tanf( 70.f * M_PI*.5f / 180.f);
 
     scenef world;
     material whiteDiffuse({1.0f, 1.0f, 1.0f, 1.0f});
+    material blueDiffuse({1.0f, 0.0f, 1.0f, 1.0f});
     material redDiffuse({1.0f, 0.0f, 0.0f, 1.0f});
+    material greenDiffuse({1.0f, 1.0f, 0.0f, 1.0f});
     material whiteEmissive({1.0f, 1.0f, 1.0f, 1.0f});
     whiteEmissive.setEmissive(50.0f);
 
@@ -90,11 +101,11 @@ int main()
     // mesh->transform(mat44<FLOAT>::makeRotation(45, 2));
     // mesh->transform(mat44<FLOAT>::makeScale(2));
     world << new sphere<FLOAT>(
-                 {0.4f, 0.0f, -0.6f}, 0.75f * 0.5f, whiteDiffuse )
+                 {0.4f, 0.0f, -0.6f}, 0.75f * 0.5f, redDiffuse )
           << new sphere<FLOAT>(
-                 {-0.4f, 0.5f, -0.6f}, 0.75f * 0.5f, redDiffuse )
+                 {-0.4f, 0.5f, -0.6f}, 0.75f * 0.5f, blueDiffuse )
           << new sphere<FLOAT>(
-                 {-0.4f, -0.5f, -0.6f}, 0.75f * 0.5f, redDiffuse )
+                 {-0.4f, -0.5f, -0.6f}, 0.75f * 0.5f, greenDiffuse )
           << new sphere<FLOAT>(
                  {0.0f, 0.0f, 1.0f}, 0.75f * 0.5f, whiteEmissive )
           << cornellbox;
@@ -127,10 +138,9 @@ int main()
                     float dx = 1.0f * mtrng() / (mtrng.max() - mtrng.min()) - 0.5f;
                     float dy = 1.0f * mtrng() / (mtrng.max() - mtrng.min()) - 0.5f;
                     // build ray for pixel (ii, jj)
-                    float py  = 1.0f * (ii + dx) / ( width - 1 ) - 0.5f;
-                    float pz  = 1.0f * (width -1 - (jj + dy)) / ( width - 1 ) - 0.5f;
-                    float px  = -1.0f;
-                    vec3f dir = {px, py, pz};
+                    float u  = 1.0f * (ii + dx) / ( width - 1 ) - 0.5f;
+                    float v  = 1.0f * (width -1 - (jj + dy)) / ( width - 1 ) - 0.5f;
+                    vec3f dir = cameraU * u + cameraV * v + cameraDir * fov;
                     dir.normalize();
                     rayf r = {cameraPos, dir};
                     for ( unsigned int sample = 0; sample < numSamples; ++sample )
