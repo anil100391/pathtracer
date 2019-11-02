@@ -14,7 +14,7 @@ using FLOAT = double;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
-constexpr unsigned int MAX_DEPTH = 16;
+constexpr unsigned int MAX_DEPTH = 4;
 
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
@@ -114,22 +114,33 @@ int main()
 
         for ( unsigned int ii = 0; ii < width; ++ii )
         {
-            // build ray for pixel (ii, jj)
-            float py  = 1.0f * ii / ( width - 1 ) - 0.5f;
-            float pz  = 1.0f * (width -1 - jj) / ( width - 1 ) - 0.5f;
-            float px  = -1.0f;
-            vec3f dir = {px, py, pz};
-            dir.normalize();
-            rayf r = {cameraPos, dir};
             color pixcolor = {0, 0, 0, 0};
-            auto now = std::chrono::high_resolution_clock::now();
-            std::mt19937 mtrng((now - begin).count());
             unsigned int numSamples = 64;
-            for ( unsigned int sample = 0; sample < numSamples; ++sample )
+            // subpixel y
+            for ( unsigned int spy = 0; spy < 2; ++spy )
             {
-                pixcolor = pixcolor + tracepath(world, mtrng, r, 0);
+                // subpixel x
+                for ( unsigned int spx = 0; spx < 2; ++spx )
+                {
+                    auto now = std::chrono::high_resolution_clock::now();
+                    std::mt19937 mtrng((now - begin).count());
+                    float dx = 1.0f * mtrng() / (mtrng.max() - mtrng.min()) - 0.5f;
+                    float dy = 1.0f * mtrng() / (mtrng.max() - mtrng.min()) - 0.5f;
+                    // build ray for pixel (ii, jj)
+                    float py  = 1.0f * (ii + dx) / ( width - 1 ) - 0.5f;
+                    float pz  = 1.0f * (width -1 - (jj + dy)) / ( width - 1 ) - 0.5f;
+                    float px  = -1.0f;
+                    vec3f dir = {px, py, pz};
+                    dir.normalize();
+                    rayf r = {cameraPos, dir};
+                    for ( unsigned int sample = 0; sample < numSamples; ++sample )
+                    {
+                        pixcolor = pixcolor + tracepath(world, mtrng, r, 0);
+                    }
+                }
             }
-            pixcolor = pixcolor / ( numSamples * MAX_DEPTH );
+
+            pixcolor = pixcolor / ( 4 * numSamples * MAX_DEPTH );
             vec3<unsigned char> c = pixcolor.touchar();
             fprintf( image, "%c%c%c", c[0], c[1], c[2] );
         }
