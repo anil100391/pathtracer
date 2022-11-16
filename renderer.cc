@@ -55,11 +55,15 @@ color renderer<T>::tracepath( const scene<T> &world,
 // -----------------------------------------------------------------------------
 // -----------------------------------------------------------------------------
 template <typename T>
-void renderer<T>::render( const scene<T> &world )
+void renderer<T>::render( const scene<T> &world, std::vector<unsigned char> &imgBuffer )
 {
     unsigned int height = _renderParams.height();
     unsigned int width  = _renderParams.width();
     unsigned int maxDepth = _renderParams.maxDepth();
+
+    imgBuffer.resize( 4 * width * height, 0u );
+    auto imgBufferPtr = imgBuffer.data();
+
     std::unique_ptr<FILE, decltype( &fclose )> image(
         fopen( "render.ppm", "w" ), &fclose );
 
@@ -108,6 +112,16 @@ void renderer<T>::render( const scene<T> &world )
 
             pixcolor              = pixcolor / ( 4 * numSamples * maxDepth );
             vec3<unsigned char> c = pixcolor.touchar();
+
+            *imgBufferPtr = c[0];
+            imgBufferPtr++;
+            *imgBufferPtr = c[1];
+            imgBufferPtr++;
+            *imgBufferPtr = c[2];
+            imgBufferPtr++;
+            *imgBufferPtr = 255;
+            imgBufferPtr++;
+
             fprintf( image.get(), "%c%c%c", c[0], c[1], c[2] );
         }
     }

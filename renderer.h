@@ -31,7 +31,7 @@ public:
     {
     }
 
-    void render( const scene<T> &world );
+    void render( const scene<T> &world, std::vector<unsigned char> &imgBuffer );
 
 private:
     color               tracepath( const scene<T> &world,
